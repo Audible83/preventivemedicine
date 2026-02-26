@@ -1,0 +1,22 @@
+{
+  "name": "preventive-medicine-valet",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Preventive Medicine Valet — longitudinal health companion",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "lint": "eslint packages/*/src --ext .ts,.tsx",
+    "format": "prettier --write \"packages/*/src/**/*.{ts,tsx,css}\"",
+    "test": "pnpm -r test",
+    "test:e2e": "playwright test",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  }
+}

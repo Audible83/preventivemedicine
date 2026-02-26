@@ -4,3 +4,10 @@ __pycache__/
 node_modules/
 dist/
 .claude/
+coverage/
+.turbo/
+*.tsbuildinfo
+.vite/
+playwright-report/
+test-results/
+*.log

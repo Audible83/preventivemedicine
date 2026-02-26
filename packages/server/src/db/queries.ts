@@ -1,0 +1,173 @@
+import { eq, and, gte, lte, desc, asc, sql } from 'drizzle-orm';
+import { db, schema } from './index.js';
+
+// ── Users ──
+
+export async function createUser(data: typeof schema.users.$inferInsert) {
+  const [user] = await db.insert(schema.users).values(data).returning();
+  return user;
+}
+
+export async function getUserById(id: string) {
+  return db.query.users.findFirst({ where: eq(schema.users.id, id) });
+}
+
+export async function getUserByEmail(email: string) {
+  return db.query.users.findFirst({ where: eq(schema.users.email, email) });
+}
+
+export async function updateUser(id: string, data: Partial<typeof schema.users.$inferInsert>) {
+  const [user] = await db
+    .update(schema.users)
+    .set({ ...data, updatedAt: new Date() })
+    .where(eq(schema.users.id, id))
+    .returning();
+  return user;
+}
+
+export async function deleteUser(id: string) {
+  await db.delete(schema.users).where(eq(schema.users.id, id));
+}
+
+// ── Observations ──
+
+export async function createObservation(data: typeof schema.observations.$inferInsert) {
+  const [obs] = await db.insert(schema.observations).values(data).returning();
+  return obs;
+}
+
+export async function createObservations(data: (typeof schema.observations.$inferInsert)[]) {
+  return db.insert(schema.observations).values(data).returning();
+}
+
+export async function getObservationsByUser(
+  userId: string,
+  opts?: { category?: string; from?: Date; to?: Date; limit?: number; offset?: number }
+) {
+  const conditions = [eq(schema.observations.userId, userId)];
+  if (opts?.category) conditions.push(eq(schema.observations.category, opts.category));
+  if (opts?.from) conditions.push(gte(schema.observations.timestamp, opts.from));
+  if (opts?.to) conditions.push(lte(schema.observations.timestamp, opts.to));
+
+  return db
+    .select()
+    .from(schema.observations)
+    .where(and(...conditions))
+    .orderBy(desc(schema.observations.timestamp))
+    .limit(opts?.limit ?? 100)
+    .offset(opts?.offset ?? 0);
+}
+
+export async function countObservationsByUser(userId: string) {
+  const [result] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(schema.observations)
+    .where(eq(schema.observations.userId, userId));
+  return result.count;
+}
+
+// ── Recommendations ──
+
+export async function createRecommendation(data: typeof schema.recommendations.$inferInsert) {
+  const [rec] = await db.insert(schema.recommendations).values(data).returning();
+  return rec;
+}
+
+export async function getRecommendationsByUser(userId: string) {
+  return db
+    .select()
+    .from(schema.recommendations)
+    .where(eq(schema.recommendations.userId, userId))
+    .orderBy(desc(schema.recommendations.createdAt));
+}
+
+export async function dismissRecommendation(id: string) {
+  const [rec] = await db
+    .update(schema.recommendations)
+    .set({ dismissedAt: new Date() })
+    .where(eq(schema.recommendations.id, id))
+    .returning();
+  return rec;
+}
+
+// ── Risk Signals ──
+
+export async function createRiskSignal(data: typeof schema.riskSignals.$inferInsert) {
+  const [signal] = await db.insert(schema.riskSignals).values(data).returning();
+  return signal;
+}
+
+export async function getRiskSignalsByUser(userId: string) {
+  return db
+    .select()
+    .from(schema.riskSignals)
+    .where(eq(schema.riskSignals.userId, userId))
+    .orderBy(desc(schema.riskSignals.createdAt));
+}
+
+// ── Audit Log ──
+
+export async function logAuditEvent(data: typeof schema.auditLog.$inferInsert) {
+  await db.insert(schema.auditLog).values(data);
+}
+
+// ── Reminders ──
+
+export async function createReminder(data: typeof schema.reminders.$inferInsert) {
+  const [reminder] = await db.insert(schema.reminders).values(data).returning();
+  return reminder;
+}
+
+export async function getPendingReminders(userId: string) {
+  return db
+    .select()
+    .from(schema.reminders)
+    .where(
+      and(
+        eq(schema.reminders.userId, userId),
+        sql`${schema.reminders.completedAt} IS NULL`,
+        lte(schema.reminders.dueAt, new Date())
+      )
+    )
+    .orderBy(asc(schema.reminders.dueAt));
+}
+
+export async function completeReminder(id: string) {
+  const [reminder] = await db
+    .update(schema.reminders)
+    .set({ completedAt: new Date() })
+    .where(eq(schema.reminders.id, id))
+    .returning();
+  return reminder;
+}
+
+// ── Data Export & Deletion ──
+
+export async function exportAllUserData(userId: string) {
+  const user = await getUserById(userId);
+  const observationsList = await getObservationsByUser(userId, { limit: 10000 });
+  const recommendationsList = await getRecommendationsByUser(userId);
+  const riskSignalsList = await getRiskSignalsByUser(userId);
+  const remindersList = await db
+    .select()
+    .from(schema.reminders)
+    .where(eq(schema.reminders.userId, userId));
+
+  return {
+    exportDate: new Date().toISOString(),
+    user,
+    observations: observationsList,
+    recommendations: recommendationsList,
+    riskSignals: riskSignalsList,
+    reminders: remindersList,
+  };
+}
+
+export async function deleteAllUserData(userId: string) {
+  await db.delete(schema.observations).where(eq(schema.observations.userId, userId));
+  await db.delete(schema.recommendations).where(eq(schema.recommendations.userId, userId));
+  await db.delete(schema.riskSignals).where(eq(schema.riskSignals.userId, userId));
+  await db.delete(schema.reminders).where(eq(schema.reminders.userId, userId));
+  await db.delete(schema.auditLog).where(eq(schema.auditLog.userId, userId));
+  await db.delete(schema.users).where(eq(schema.users.id, userId));
+}

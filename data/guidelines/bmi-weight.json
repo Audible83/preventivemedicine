@@ -1,0 +1,27 @@
+{
+  "id": "aha-bmi-weight",
+  "source": "AHA/ACC 2023",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 18,
+    "ageMax": 79,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "vital",
+    "code": "bmi"
+  },
+  "recommendation": "Monitoring BMI and waist circumference can provide useful context for overall health. Discuss weight management strategies with a clinician if desired.",
+  "riskFactors": [
+    "Sedentary lifestyle",
+    "High calorie diet",
+    "Family history of obesity"
+  ],
+  "citation": "https://www.heart.org/en/healthy-living/healthy-eating/losing-weight/bmi-in-adults",
+  "referenceRange": {
+    "min": 18.5,
+    "max": 25,
+    "unit": "kg/m²",
+    "label": "Normal: 18.5-24.9 kg/m²"
+  }
+}

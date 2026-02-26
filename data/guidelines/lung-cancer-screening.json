@@ -1,0 +1,23 @@
+{
+  "id": "uspstf-lung-cancer-screening",
+  "source": "USPSTF 2021",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 50,
+    "ageMax": 80,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "screening",
+    "code": "lung-cancer-ldct"
+  },
+  "recommendation": "Adults aged 50-80 with a significant smoking history may wish to discuss annual low-dose CT screening with a clinician. This applies to those who currently smoke or have quit within the past 15 years.",
+  "riskFactors": [
+    "Current smoking",
+    "20+ pack-year history",
+    "Quit within 15 years",
+    "Occupational exposures"
+  ],
+  "citation": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/lung-cancer-screening",
+  "referenceRange": null
+}

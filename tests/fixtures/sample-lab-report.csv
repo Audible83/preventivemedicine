@@ -1,0 +1,7 @@
+date,test,result,unit,reference_range
+2026-01-20,Glucose Fasting,105,mg/dL,70-100
+2026-01-20,Total Cholesterol,215,mg/dL,<200
+2026-01-20,HDL Cholesterol,45,mg/dL,>40
+2026-01-20,LDL Cholesterol,140,mg/dL,<100
+2026-01-20,Triglycerides,180,mg/dL,<150
+2026-01-20,HbA1c,5.8,%,<5.7

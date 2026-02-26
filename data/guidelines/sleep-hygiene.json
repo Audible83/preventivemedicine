@@ -1,0 +1,28 @@
+{
+  "id": "aasm-sleep-guidelines",
+  "source": "AASM/SRS 2023",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 18,
+    "ageMax": 99,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "sleep",
+    "code": "sleep-hours"
+  },
+  "recommendation": "Adults generally benefit from 7-9 hours of sleep per night. Consistent sleep schedules and good sleep hygiene practices support overall health.",
+  "riskFactors": [
+    "Irregular sleep schedule",
+    "Screen use before bed",
+    "Caffeine late in day",
+    "Sleep environment issues"
+  ],
+  "citation": "https://aasm.org/resources/pdf/pressroom/adult-sleep-duration-consensus.pdf",
+  "referenceRange": {
+    "min": 7,
+    "max": 9,
+    "unit": "hours",
+    "label": "Recommended: 7-9 hours"
+  }
+}

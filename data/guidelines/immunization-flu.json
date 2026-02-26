@@ -1,0 +1,23 @@
+{
+  "id": "cdc-flu-vaccine",
+  "source": "CDC 2024-2025",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 6,
+    "ageMax": 99,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "screening",
+    "code": "influenza-vaccine"
+  },
+  "recommendation": "Annual influenza vaccination is recommended for most individuals aged 6 months and older. Discuss the appropriate vaccine type and timing with a clinician.",
+  "riskFactors": [
+    "Age over 65",
+    "Chronic health conditions",
+    "Pregnancy",
+    "Healthcare workers"
+  ],
+  "citation": "https://www.cdc.gov/flu/prevent/vaccinations.htm",
+  "referenceRange": null
+}

@@ -1,0 +1,28 @@
+{
+  "id": "uspstf-diabetes-screening",
+  "source": "USPSTF 2021",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 35,
+    "ageMax": 70,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "lab",
+    "code": "glucose"
+  },
+  "recommendation": "Adults aged 35-70, especially those who are overweight, may benefit from discussing prediabetes and type 2 diabetes screening with a clinician.",
+  "riskFactors": [
+    "Overweight/obesity",
+    "Family history of diabetes",
+    "Physical inactivity",
+    "History of gestational diabetes"
+  ],
+  "citation": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/screening-for-prediabetes-and-type-2-diabetes",
+  "referenceRange": {
+    "min": 70,
+    "max": 100,
+    "unit": "mg/dL",
+    "label": "Normal fasting: 70-100 mg/dL"
+  }
+}

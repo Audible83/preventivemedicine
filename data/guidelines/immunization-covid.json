@@ -1,0 +1,22 @@
+{
+  "id": "cdc-covid-vaccine",
+  "source": "CDC 2024-2025",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 6,
+    "ageMax": 99,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "screening",
+    "code": "covid-vaccine"
+  },
+  "recommendation": "Updated COVID-19 vaccines may be available. Discuss with a clinician whether an updated dose is appropriate based on your vaccination history and health status.",
+  "riskFactors": [
+    "Age over 65",
+    "Immunocompromised",
+    "Chronic health conditions"
+  ],
+  "citation": "https://www.cdc.gov/covid/vaccines/index.html",
+  "referenceRange": null
+}

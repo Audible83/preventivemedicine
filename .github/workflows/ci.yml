@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  lint-typecheck-test:
+    name: Lint, Type Check & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm --filter @pm-valet/shared build
+
+      - name: Type check all packages
+        run: pnpm -r typecheck
+
+      - name: Run unit tests
+        run: pnpm -r test
+
+      - name: Verify disclaimer in guideline data
+        run: |
+          # Ensure all guideline recommendations are non-diagnostic
+          ! grep -ri "you have " data/guidelines/ || exit 1
+          ! grep -ri "go to the ER" data/guidelines/ || exit 1
+          ! grep -ri "start medication" data/guidelines/ || exit 1
+          echo "Safety check passed"

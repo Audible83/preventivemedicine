@@ -1,0 +1,28 @@
+{
+  "id": "uspstf-bp-screening",
+  "source": "USPSTF 2023",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 18,
+    "ageMax": 79,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "vital",
+    "code": "blood-pressure-systolic"
+  },
+  "recommendation": "Adults aged 18 and older may benefit from periodic blood pressure screening. If readings are consistently above 130/80 mmHg, it may be helpful to discuss next steps with a clinician.",
+  "riskFactors": [
+    "Family history of hypertension",
+    "High sodium diet",
+    "Physical inactivity",
+    "Obesity"
+  ],
+  "citation": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/hypertension-in-adults-screening",
+  "referenceRange": {
+    "min": 90,
+    "max": 130,
+    "unit": "mmHg",
+    "label": "Normal: <130 mmHg systolic"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "uspstf-tobacco-screening",
+  "source": "USPSTF 2021",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 18,
+    "ageMax": 79,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "survey",
+    "code": "tobacco-use"
+  },
+  "recommendation": "If you use tobacco, discussing cessation options with a clinician may help reduce long-term health risks. Many support resources are available.",
+  "riskFactors": [
+    "Current smoking",
+    "Smokeless tobacco use",
+    "Secondhand smoke exposure"
+  ],
+  "citation": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/tobacco-use-in-adults-and-pregnant-women-counseling-and-interventions",
+  "referenceRange": null
+}

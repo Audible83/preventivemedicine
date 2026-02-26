@@ -1,0 +1,28 @@
+{
+  "id": "uspstf-depression-screening",
+  "source": "USPSTF 2023",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 12,
+    "ageMax": 79,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "survey",
+    "code": "phq2-score"
+  },
+  "recommendation": "Periodic screening for depression using validated tools like the PHQ-2 may be beneficial. If you experience persistent low mood or loss of interest, discussing these feelings with a clinician is encouraged.",
+  "riskFactors": [
+    "History of depression",
+    "Major life changes",
+    "Chronic illness",
+    "Social isolation"
+  ],
+  "citation": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/depression-in-adults-screening",
+  "referenceRange": {
+    "min": 0,
+    "max": 3,
+    "unit": "score",
+    "label": "PHQ-2: 0-3 normal range"
+  }
+}

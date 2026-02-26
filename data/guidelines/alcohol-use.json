@@ -1,0 +1,22 @@
+{
+  "id": "uspstf-alcohol-screening",
+  "source": "USPSTF 2018",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 18,
+    "ageMax": 79,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "survey",
+    "code": "alcohol-use"
+  },
+  "recommendation": "Periodic screening for unhealthy alcohol use may be beneficial. If you have concerns about alcohol consumption, discussing them with a clinician can be helpful.",
+  "riskFactors": [
+    "Heavy drinking",
+    "Binge drinking",
+    "Family history of alcohol use disorder"
+  ],
+  "citation": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/unhealthy-alcohol-use-in-adolescents-and-adults-screening-and-behavioral-counseling-interventions",
+  "referenceRange": null
+}

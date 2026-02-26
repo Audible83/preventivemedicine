@@ -1,0 +1,22 @@
+{
+  "id": "aha-physical-activity",
+  "source": "AHA 2024",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 18,
+    "ageMax": 99,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "activity",
+    "code": "steps"
+  },
+  "recommendation": "The AHA recommends at least 150 minutes of moderate-intensity aerobic activity per week. Increasing daily movement can support long-term cardiovascular health.",
+  "riskFactors": [
+    "Sedentary occupation",
+    "Limited mobility",
+    "Chronic fatigue"
+  ],
+  "citation": "https://www.heart.org/en/healthy-living/fitness/fitness-basics/aha-recs-for-physical-activity-in-adults",
+  "referenceRange": null
+}

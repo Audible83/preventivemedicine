@@ -1,0 +1,22 @@
+{
+  "id": "uspstf-colorectal-screening",
+  "source": "USPSTF 2021",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 45,
+    "ageMax": 75,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "screening",
+    "code": "colorectal"
+  },
+  "recommendation": "Adults aged 45-75 may wish to discuss colorectal cancer screening options with a clinician. Several screening methods are available.",
+  "riskFactors": [
+    "Family history of colorectal cancer",
+    "Inflammatory bowel disease",
+    "Sedentary lifestyle"
+  ],
+  "citation": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/colorectal-cancer-screening",
+  "referenceRange": null
+}

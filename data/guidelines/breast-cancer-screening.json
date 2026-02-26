@@ -1,0 +1,22 @@
+{
+  "id": "uspstf-breast-cancer-screening",
+  "source": "USPSTF 2024",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 40,
+    "ageMax": 74,
+    "sex": ["female"]
+  },
+  "trigger": {
+    "category": "screening",
+    "code": "mammography"
+  },
+  "recommendation": "Women aged 40-74 may benefit from discussing breast cancer screening with mammography every two years with a clinician. Individual risk factors may influence the recommended approach.",
+  "riskFactors": [
+    "Family history of breast cancer",
+    "BRCA gene mutations",
+    "Previous chest radiation"
+  ],
+  "citation": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/breast-cancer-screening",
+  "referenceRange": null
+}

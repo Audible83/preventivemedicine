@@ -1,0 +1,28 @@
+{
+  "id": "uspstf-lipid-screening",
+  "source": "USPSTF 2023",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 20,
+    "ageMax": 75,
+    "sex": ["male", "female"]
+  },
+  "trigger": {
+    "category": "lab",
+    "code": "cholesterol-total"
+  },
+  "recommendation": "Adults aged 20-75 may benefit from periodic lipid panel screening. Discuss your cholesterol levels and cardiovascular risk factors with a clinician.",
+  "riskFactors": [
+    "Family history of heart disease",
+    "Smoking",
+    "Diabetes",
+    "High blood pressure"
+  ],
+  "citation": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/lipid-disorders-in-adults-cholesterol-dyslipidemia-screening",
+  "referenceRange": {
+    "min": 0,
+    "max": 200,
+    "unit": "mg/dL",
+    "label": "Desirable: <200 mg/dL"
+  }
+}

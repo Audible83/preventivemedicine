@@ -1,0 +1,22 @@
+{
+  "id": "uspstf-cervical-screening",
+  "source": "USPSTF 2018",
+  "version": "1.0",
+  "appliesTo": {
+    "ageMin": 21,
+    "ageMax": 65,
+    "sex": ["female"]
+  },
+  "trigger": {
+    "category": "screening",
+    "code": "cervical-screening"
+  },
+  "recommendation": "Women aged 21-65 may benefit from periodic cervical cancer screening. The frequency and type of test depend on age and previous results — discuss options with a clinician.",
+  "riskFactors": [
+    "HPV infection",
+    "Smoking",
+    "Immunosuppression"
+  ],
+  "citation": "https://www.uspreventiveservicestaskforce.org/uspstf/recommendation/cervical-cancer-screening",
+  "referenceRange": null
+}

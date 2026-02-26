@@ -85,3 +85,16 @@ export const reminders = pgTable('reminders', {
   guidelineId: text('guideline_id'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+export const notifications = pgTable('notifications', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  type: text('type').notNull().default('in_app'), // in_app | email | push
+  title: text('title').notNull(),
+  message: text('message').notNull(),
+  read: boolean('read').default(false).notNull(),
+  readAt: timestamp('read_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  userReadIdx: index('notif_user_read_idx').on(table.userId, table.read),
+}));

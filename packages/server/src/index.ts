@@ -10,6 +10,10 @@ import { timelineRouter } from './routes/timeline.js';
 import { recommendationsRouter } from './routes/recommendations.js';
 import { uploadRouter } from './routes/upload.js';
 import { guidelinesRouter } from './routes/guidelines.js';
+import { remindersRouter } from './routes/reminders.js';
+import { notificationsRouter } from './routes/notifications.js';
+import { auditMiddleware } from './middleware/audit.js';
+import { sanitizeMiddleware } from './middleware/sanitize.js';
 
 dotenv.config();
 
@@ -20,6 +24,9 @@ const PORT = process.env.PORT || 3001;
 app.use(helmet());
 app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5173' }));
 app.use(express.json({ limit: '10mb' }));
+
+// Input sanitization (strip HTML, validate content-type)
+app.use(sanitizeMiddleware);
 
 // Rate limiting
 const limiter = rateLimit({
@@ -37,12 +44,14 @@ app.get('/api/health', (_req, res) => {
 
 // Routes
 app.use('/api/auth', authRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/observations', observationsRouter);
-app.use('/api/timeline', timelineRouter);
-app.use('/api/recommendations', recommendationsRouter);
-app.use('/api/upload', uploadRouter);
+app.use('/api/users', auditMiddleware('access', 'users'), usersRouter);
+app.use('/api/observations', auditMiddleware('access', 'observations'), observationsRouter);
+app.use('/api/timeline', auditMiddleware('access', 'timeline'), timelineRouter);
+app.use('/api/recommendations', auditMiddleware('access', 'recommendations'), recommendationsRouter);
+app.use('/api/upload', auditMiddleware('upload', 'upload'), uploadRouter);
 app.use('/api/guidelines', guidelinesRouter);
+app.use('/api/reminders', auditMiddleware('access', 'reminders'), remindersRouter);
+app.use('/api/notifications', auditMiddleware('access', 'notifications'), notificationsRouter);
 
 // Error handler
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

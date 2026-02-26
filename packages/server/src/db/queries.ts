@@ -81,11 +81,11 @@ export async function getRecommendationsByUser(userId: string) {
     .orderBy(desc(schema.recommendations.createdAt));
 }
 
-export async function dismissRecommendation(id: string) {
+export async function dismissRecommendation(id: string, userId: string) {
   const [rec] = await db
     .update(schema.recommendations)
     .set({ dismissedAt: new Date() })
-    .where(eq(schema.recommendations.id, id))
+    .where(and(eq(schema.recommendations.id, id), eq(schema.recommendations.userId, userId)))
     .returning();
   return rec;
 }
@@ -140,13 +140,52 @@ export async function getPendingReminders(userId: string) {
     .orderBy(asc(schema.reminders.dueAt));
 }
 
-export async function completeReminder(id: string) {
+export async function completeReminder(id: string, userId: string) {
   const [reminder] = await db
     .update(schema.reminders)
     .set({ completedAt: new Date() })
-    .where(eq(schema.reminders.id, id))
+    .where(and(eq(schema.reminders.id, id), eq(schema.reminders.userId, userId)))
     .returning();
   return reminder;
+}
+
+// ── Notifications ──
+
+export async function createNotification(data: typeof schema.notifications.$inferInsert) {
+  const [notification] = await db.insert(schema.notifications).values(data).returning();
+  return notification;
+}
+
+export async function getUnreadNotifications(userId: string) {
+  return db
+    .select()
+    .from(schema.notifications)
+    .where(
+      and(
+        eq(schema.notifications.userId, userId),
+        eq(schema.notifications.read, false)
+      )
+    )
+    .orderBy(desc(schema.notifications.createdAt));
+}
+
+export async function markNotificationRead(id: string, userId: string) {
+  const [notification] = await db
+    .update(schema.notifications)
+    .set({ read: true, readAt: new Date() })
+    .where(and(eq(schema.notifications.id, id), eq(schema.notifications.userId, userId)))
+    .returning();
+  return notification;
+}
+
+export async function getNotificationsByUser(userId: string, opts?: { limit?: number; offset?: number }) {
+  return db
+    .select()
+    .from(schema.notifications)
+    .where(eq(schema.notifications.userId, userId))
+    .orderBy(desc(schema.notifications.createdAt))
+    .limit(opts?.limit ?? 50)
+    .offset(opts?.offset ?? 0);
 }
 
 // ── Data Export & Deletion ──
@@ -160,6 +199,7 @@ export async function exportAllUserData(userId: string) {
     .select()
     .from(schema.reminders)
     .where(eq(schema.reminders.userId, userId));
+  const notificationsList = await getNotificationsByUser(userId, { limit: 10000 });
 
   return {
     exportDate: new Date().toISOString(),
@@ -168,6 +208,7 @@ export async function exportAllUserData(userId: string) {
     recommendations: recommendationsList,
     riskSignals: riskSignalsList,
     reminders: remindersList,
+    notifications: notificationsList,
   };
 }
 
@@ -176,6 +217,7 @@ export async function deleteAllUserData(userId: string) {
   await db.delete(schema.recommendations).where(eq(schema.recommendations.userId, userId));
   await db.delete(schema.riskSignals).where(eq(schema.riskSignals.userId, userId));
   await db.delete(schema.reminders).where(eq(schema.reminders.userId, userId));
+  await db.delete(schema.notifications).where(eq(schema.notifications.userId, userId));
   await db.delete(schema.auditLog).where(eq(schema.auditLog.userId, userId));
   await db.delete(schema.users).where(eq(schema.users.id, userId));
 }

@@ -30,7 +30,7 @@ recommendationsRouter.post('/evaluate', async (req: Request, res: Response) => {
 
 recommendationsRouter.patch('/:id/dismiss', async (req: Request, res: Response) => {
   try {
-    const rec = await dismissRecommendation(req.params.id as string);
+    const rec = await dismissRecommendation(req.params.id as string, req.user!.userId);
     if (!rec) {
       res.status(404).json({ error: 'Recommendation not found' });
       return;

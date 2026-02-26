@@ -2,7 +2,13 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import rateLimit from 'express-rate-limit';
 import { createUser, getUserByEmail } from '../db/queries.js';
-import { generateToken, authenticateToken } from '../middleware/auth.js';
+import {
+  generateToken,
+  generateRefreshToken,
+  rotateRefreshToken,
+  invalidateRefreshToken,
+  authenticateToken,
+} from '../middleware/auth.js';
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -33,8 +39,15 @@ authRouter.post('/register', async (req: Request, res: Response) => {
     const passwordHash = await bcrypt.hash(password, 12);
     const user = await createUser({ email, passwordHash, displayName });
 
-    const token = generateToken({ userId: user.id, email: user.email! });
-    res.status(201).json({ token, user: { id: user.id, email: user.email, displayName: user.displayName } });
+    const payload = { userId: user.id, email: user.email! };
+    const accessToken = generateToken(payload);
+    const refreshToken = generateRefreshToken(payload);
+
+    res.status(201).json({
+      accessToken,
+      refreshToken,
+      user: { id: user.id, email: user.email, displayName: user.displayName },
+    });
   } catch (err) {
     console.error('Registration error:', err);
     res.status(500).json({ error: 'Registration failed' });
@@ -62,11 +75,58 @@ authRouter.post('/login', async (req: Request, res: Response) => {
       return;
     }
 
-    const token = generateToken({ userId: user.id, email: user.email! });
-    res.json({ token, user: { id: user.id, email: user.email, displayName: user.displayName } });
+    const payload = { userId: user.id, email: user.email! };
+    const accessToken = generateToken(payload);
+    const refreshToken = generateRefreshToken(payload);
+
+    res.json({
+      accessToken,
+      refreshToken,
+      user: { id: user.id, email: user.email, displayName: user.displayName },
+    });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+authRouter.post('/refresh', async (req: Request, res: Response) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      res.status(400).json({ error: 'Refresh token is required' });
+      return;
+    }
+
+    const result = rotateRefreshToken(refreshToken);
+    if (!result) {
+      res.status(401).json({ error: 'Invalid or expired refresh token' });
+      return;
+    }
+
+    res.json({
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+    });
+  } catch (err) {
+    console.error('Refresh error:', err);
+    res.status(500).json({ error: 'Token refresh failed' });
+  }
+});
+
+authRouter.post('/logout', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (refreshToken) {
+      invalidateRefreshToken(refreshToken);
+    }
+
+    res.json({ message: 'Logged out successfully' });
+  } catch (err) {
+    console.error('Logout error:', err);
+    res.status(500).json({ error: 'Logout failed' });
   }
 });
 

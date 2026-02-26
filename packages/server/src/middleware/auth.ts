@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'change-me-to-a-random-secret';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
+  throw new Error('JWT_SECRET environment variable is required in production');
+}
+const secret = JWT_SECRET || 'dev-only-secret-do-not-use-in-production';
 
 export interface AuthPayload {
   userId: string;
@@ -26,7 +30,7 @@ export function authenticateToken(req: Request, res: Response, next: NextFunctio
   }
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as AuthPayload;
+    const payload = jwt.verify(token, secret) as AuthPayload;
     req.user = payload;
     next();
   } catch {
@@ -36,5 +40,5 @@ export function authenticateToken(req: Request, res: Response, next: NextFunctio
 
 export function generateToken(payload: AuthPayload): string {
   const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
-  return jwt.sign(payload, JWT_SECRET, { expiresIn } as jwt.SignOptions);
+  return jwt.sign(payload, secret, { expiresIn } as jwt.SignOptions);
 }

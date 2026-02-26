@@ -90,7 +90,15 @@ export async function dismissRecommendation(id: string) {
   return rec;
 }
 
+export async function clearRecommendationsByUser(userId: string) {
+  await db.delete(schema.recommendations).where(eq(schema.recommendations.userId, userId));
+}
+
 // ── Risk Signals ──
+
+export async function clearRiskSignalsByUser(userId: string) {
+  await db.delete(schema.riskSignals).where(eq(schema.riskSignals.userId, userId));
+}
 
 export async function createRiskSignal(data: typeof schema.riskSignals.$inferInsert) {
   const [signal] = await db.insert(schema.riskSignals).values(data).returning();

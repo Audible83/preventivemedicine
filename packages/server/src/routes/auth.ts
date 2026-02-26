@@ -1,9 +1,19 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
+import rateLimit from 'express-rate-limit';
 import { createUser, getUserByEmail } from '../db/queries.js';
 import { generateToken, authenticateToken } from '../middleware/auth.js';
 
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // 10 attempts per window
+  message: { error: 'Too many attempts, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 export const authRouter = Router();
+authRouter.use(authLimiter);
 
 authRouter.post('/register', async (req: Request, res: Response) => {
   try {

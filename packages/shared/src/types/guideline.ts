@@ -27,6 +27,7 @@ export const GuidelineSchema = z.object({
       unit: z.string(),
       label: z.string(),
     })
+    .nullable()
     .optional(),
 });
 

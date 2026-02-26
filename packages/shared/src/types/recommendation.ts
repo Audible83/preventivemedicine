@@ -9,6 +9,9 @@ export const RecommendationCategorySchema = z.enum([
   'mental_health',
   'immunization',
   'general',
+  'lab',
+  'vital',
+  'survey',
 ]);
 export type RecommendationCategory = z.infer<typeof RecommendationCategorySchema>;
 

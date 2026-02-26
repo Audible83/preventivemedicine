@@ -1,5 +1,5 @@
 import { loadGuidelines } from './loader.js';
-import { getUserById, getObservationsByUser, createRecommendation, createRiskSignal } from '../db/queries.js';
+import { getUserById, getObservationsByUser, createRecommendation, createRiskSignal, clearRecommendationsByUser, clearRiskSignalsByUser } from '../db/queries.js';
 import { DISCLAIMER } from '@pm-valet/shared';
 import { filterSafetyOutput } from './safety-filter.js';
 
@@ -23,6 +23,10 @@ export async function evaluateGuidelines(userId: string) {
 
   const age = user.dateOfBirth ? calculateAge(user.dateOfBirth) : null;
   const sex = user.sex;
+
+  // Clear previous evaluations for idempotency
+  await clearRecommendationsByUser(userId);
+  await clearRiskSignalsByUser(userId);
 
   const matchedRecommendations: any[] = [];
   const matchedRiskSignals: any[] = [];

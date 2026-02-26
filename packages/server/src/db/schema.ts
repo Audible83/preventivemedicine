@@ -98,3 +98,29 @@ export const notifications = pgTable('notifications', {
 }, (table) => ({
   userReadIdx: index('notif_user_read_idx').on(table.userId, table.read),
 }));
+
+export const integrationConnections = pgTable('integration_connections', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  integrationId: text('integration_id').notNull(),
+  status: text('status').notNull().default('pending'), // pending | connected | disconnected | error
+  accessToken: text('access_token'),
+  refreshToken: text('refresh_token'),
+  expiresAt: timestamp('expires_at'),
+  lastSyncAt: timestamp('last_sync_at'),
+  metadata: jsonb('metadata').default({}),
+  consentGivenAt: timestamp('consent_given_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIntegrationIdx: index('ic_user_integration_idx').on(table.userId, table.integrationId),
+}));
+
+export const webhookKeys = pgTable('webhook_keys', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  apiKey: text('api_key').unique().notNull(),
+  label: text('label').notNull(),
+  active: boolean('active').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});

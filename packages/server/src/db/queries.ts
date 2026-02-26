@@ -188,6 +188,69 @@ export async function getNotificationsByUser(userId: string, opts?: { limit?: nu
     .offset(opts?.offset ?? 0);
 }
 
+// ── Integration Connections ──
+
+export async function createIntegrationConnection(data: typeof schema.integrationConnections.$inferInsert) {
+  const [conn] = await db.insert(schema.integrationConnections).values(data).returning();
+  return conn;
+}
+
+export async function getIntegrationConnections(userId: string) {
+  return db
+    .select()
+    .from(schema.integrationConnections)
+    .where(eq(schema.integrationConnections.userId, userId))
+    .orderBy(desc(schema.integrationConnections.createdAt));
+}
+
+export async function getIntegrationConnection(userId: string, integrationId: string) {
+  return db.query.integrationConnections.findFirst({
+    where: and(
+      eq(schema.integrationConnections.userId, userId),
+      eq(schema.integrationConnections.integrationId, integrationId)
+    ),
+  });
+}
+
+export async function updateIntegrationConnection(
+  id: string,
+  userId: string,
+  data: Partial<typeof schema.integrationConnections.$inferInsert>
+) {
+  const [conn] = await db
+    .update(schema.integrationConnections)
+    .set({ ...data, updatedAt: new Date() })
+    .where(and(eq(schema.integrationConnections.id, id), eq(schema.integrationConnections.userId, userId)))
+    .returning();
+  return conn;
+}
+
+export async function deleteIntegrationConnection(id: string, userId: string) {
+  await db
+    .delete(schema.integrationConnections)
+    .where(and(eq(schema.integrationConnections.id, id), eq(schema.integrationConnections.userId, userId)));
+}
+
+// ── Webhook Keys ──
+
+export async function createWebhookKey(data: typeof schema.webhookKeys.$inferInsert) {
+  const [key] = await db.insert(schema.webhookKeys).values(data).returning();
+  return key;
+}
+
+export async function getWebhookKeysByUser(userId: string) {
+  return db
+    .select()
+    .from(schema.webhookKeys)
+    .where(eq(schema.webhookKeys.userId, userId));
+}
+
+export async function getUserByWebhookKey(apiKey: string) {
+  return db.query.webhookKeys.findFirst({
+    where: and(eq(schema.webhookKeys.apiKey, apiKey), eq(schema.webhookKeys.active, true)),
+  });
+}
+
 // ── Data Export & Deletion ──
 
 export async function exportAllUserData(userId: string) {
@@ -200,6 +263,8 @@ export async function exportAllUserData(userId: string) {
     .from(schema.reminders)
     .where(eq(schema.reminders.userId, userId));
   const notificationsList = await getNotificationsByUser(userId, { limit: 10000 });
+  const integrationsList = await getIntegrationConnections(userId);
+  const webhookKeysList = await getWebhookKeysByUser(userId);
 
   return {
     exportDate: new Date().toISOString(),
@@ -209,10 +274,14 @@ export async function exportAllUserData(userId: string) {
     riskSignals: riskSignalsList,
     reminders: remindersList,
     notifications: notificationsList,
+    integrations: integrationsList,
+    webhookKeys: webhookKeysList,
   };
 }
 
 export async function deleteAllUserData(userId: string) {
+  await db.delete(schema.integrationConnections).where(eq(schema.integrationConnections.userId, userId));
+  await db.delete(schema.webhookKeys).where(eq(schema.webhookKeys.userId, userId));
   await db.delete(schema.observations).where(eq(schema.observations.userId, userId));
   await db.delete(schema.recommendations).where(eq(schema.recommendations.userId, userId));
   await db.delete(schema.riskSignals).where(eq(schema.riskSignals.userId, userId));

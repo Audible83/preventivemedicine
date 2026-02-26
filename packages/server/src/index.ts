@@ -12,6 +12,7 @@ import { uploadRouter } from './routes/upload.js';
 import { guidelinesRouter } from './routes/guidelines.js';
 import { remindersRouter } from './routes/reminders.js';
 import { notificationsRouter } from './routes/notifications.js';
+import { integrationsRouter } from './routes/integrations.js';
 import { auditMiddleware } from './middleware/audit.js';
 import { sanitizeMiddleware } from './middleware/sanitize.js';
 
@@ -52,6 +53,7 @@ app.use('/api/upload', auditMiddleware('upload', 'upload'), uploadRouter);
 app.use('/api/guidelines', guidelinesRouter);
 app.use('/api/reminders', auditMiddleware('access', 'reminders'), remindersRouter);
 app.use('/api/notifications', auditMiddleware('access', 'notifications'), notificationsRouter);
+app.use('/api/integrations', auditMiddleware('access', 'integrations'), integrationsRouter);
 
 // Error handler
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

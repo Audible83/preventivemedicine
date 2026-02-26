@@ -1,0 +1,6 @@
+# No external Python packages required.
+# This app uses tkinter (built-in) and subprocess calls to:
+#   - claude  (Claude Code CLI)
+#   - gemini  (Gemini CLI)
+#   - codex   (OpenAI Codex CLI)
+# Make sure all three CLIs are installed and on your PATH.

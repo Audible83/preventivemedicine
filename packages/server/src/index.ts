@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
+import * as Sentry from '@sentry/node';
 import { authRouter } from './routes/auth.js';
 import { usersRouter } from './routes/users.js';
 import { observationsRouter } from './routes/observations.js';
@@ -17,6 +18,16 @@ import { auditMiddleware } from './middleware/audit.js';
 import { sanitizeMiddleware } from './middleware/sanitize.js';
 
 dotenv.config();
+
+// ── Sentry Error Tracking ──
+// No-op if SENTRY_DSN is not set; safe to leave unconfigured in dev.
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV || 'development',
+    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.2 : 1.0,
+  });
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -55,9 +66,12 @@ app.use('/api/reminders', auditMiddleware('access', 'reminders'), remindersRoute
 app.use('/api/notifications', auditMiddleware('access', 'notifications'), notificationsRouter);
 app.use('/api/integrations', auditMiddleware('access', 'integrations'), integrationsRouter);
 
-// Error handler
+// Error handler — capture to Sentry when configured, then respond
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Unhandled error:', err.message);
+  if (process.env.SENTRY_DSN) {
+    Sentry.captureException(err);
+  }
   res.status(500).json({ error: 'Internal server error' });
 });
 
